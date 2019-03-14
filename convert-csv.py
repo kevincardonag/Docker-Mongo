@@ -5,7 +5,8 @@ try:
 
 	# file output
 	jsonfile = open('file.json', 'w')
-    
+	jsonfile.write("[")
+
     # csv register 2017
 	csvfile_2017 = open('scopus2017.csv', 'r')
 	fieldnames = ("Authors","Author(s) ID", "Title", "Year","Source title", "Cited by", "Link", "Abstract", "Author Keywords",  "Document Type", "Source")
@@ -16,6 +17,7 @@ try:
 		if count >= 1:
 			if count <= 850:
 				json.dump(row, jsonfile)
+				jsonfile.write(",")
 				jsonfile.write("\n")
 				count+=1
 			else:
@@ -34,6 +36,7 @@ try:
 		if count >= 1:
 			if count <= 850:
 				json.dump(row, jsonfile)
+				jsonfile.write(",")
 				jsonfile.write("\n")
 				count+=1
 			else:
@@ -52,6 +55,7 @@ try:
 		if count >= 1:
 			if count <= 800:
 				json.dump(row, jsonfile)
+				jsonfile.write(",")
 				jsonfile.write("\n")
 				count+=1
 			else:
@@ -59,6 +63,8 @@ try:
 		else:
 			count+=1
 			continue
+
+	jsonfile.write("]")
 
 except Exception as Error:
 	print(Error)
