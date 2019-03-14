@@ -2,6 +2,7 @@ version: '2'
 services:
   mongodb:
     image: mongo
+    container_name: docker_mongo
     ports:
       - 28017
 

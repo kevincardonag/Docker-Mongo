@@ -2,4 +2,4 @@
 
 docker-compose up -d
 
-docker exec -it Docker-Mongo_mongodb_1 mongo
+docker exec -it docker_mongo mongo
