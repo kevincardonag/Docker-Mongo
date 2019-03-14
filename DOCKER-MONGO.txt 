@@ -1,0 +1,93 @@
+docker pull mongo
+
+docker network create mongo-cluster-proyecto
+
+### Mirar como ponerlos a correr como demonios OJO CORRERLOS EN CONSOLAS APARTE ###
+docker run -p 26051:26050 --name cfg1 --net mongo-cluster-proyecto mongo mongod --configsvr --replSet configrs --port 26050 --logappend
+
+docker run -p 26052:26050 --name cfg2 --net mongo-cluster-proyecto mongo mongod --configsvr --replSet configrs --port 26050 --logappend
+
+docker run -p 26053:26050 --name cfg3 --net mongo-cluster-proyecto mongo mongod --configsvr --replSet configrs --port 26050 --logappend
+###  fin comentario ###
+
+docker exec -it cfg1 /bin/bash
+
+mongo -port 26050
+
+conf = {_id: "configrs",
+           members: [ {_id:0, host:"cfg1:26050" },
+                      {_id:1, host:"cfg2:26050" },
+                      {_id:2, host:"cfg3:26050" }, ] }
+
+rs.initiate(conf)                      
+
+docker run -d --name p1_1 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p1  --logappend --oplogSize 50
+
+docker run -d --name p1_2 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p1  --logappend --oplogSize 50
+
+docker run -d --name p2_1 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p2  --logappend --oplogSize 50
+
+docker run -d --name p2_2 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p2  --logappend --oplogSize 50
+
+docker run -d --name p3_1 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p3 --logappend --oplogSize 50
+
+docker run -d --name p3_2 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p3 --logappend --oplogSize 50
+
+docker run -d --name p4_1 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p4 --logappend --oplogSize 50
+
+docker run -d --name p4_2 --net mongo-cluster-proyecto mongo mongod --shardsvr --replSet p4 --logappend --oplogSize 50
+
+
+docker run -d --name mongos1 -p 26601:27017 --net mongo-cluster-proyecto mongo mongos --configdb configrs/cfg1:26050,cfg2:26050,cfg3:26050  --logappend
+
+docker run -d --name mongos2 -p 26602:27017 --net mongo-cluster-proyecto mongo mongos --configdb configrs/cfg1:26050,cfg2:26050,cfg3:26050  --logappend
+
+
+docker exec -it p1_1 /bin/bash
+
+mongo --port 27018
+
+config = {_id: "p1",
+           members: [ {_id:0, host:"p1_1:27018" },{_id:1, host:"p1_2:27018" } ] }
+
+rs.initiate(config)
+
+exit
+
+docker exec -it p2_1 mongo --port 27018
+
+config = {_id: "p2",
+           members: [ {_id:0, host:"p2_1:27018" },{_id:1, host:"p2_2:27018" } ] }
+
+rs.initiate(config)
+
+exit
+
+docker exec -it p3_1 mongo --port 27018
+
+config = {_id: "p3",
+           members: [ {_id:0, host:"p3_1:27018" },{_id:1, host:"p3_2:27018" } ] }
+
+rs.initiate(config)
+
+exit
+
+docker exec -it p4_1 mongo --port 27018
+
+config = {_id: "p4",
+           members: [ {_id:0, host:"p4_1:27018" },{_id:1, host:"p4_2:27018" } ] }
+
+rs.initiate(config)
+
+exit
+
+docker exec -it mongos1 mongo
+
+sh.addShard("p1/p1_1:27018")
+sh.addShard("p2/p2_1:27018")
+sh.addShard("p3/p3_1:27018")
+sh.addShard("p4/p4_1:27018")
+
+use project
+
+sh.enableSharding("project")
