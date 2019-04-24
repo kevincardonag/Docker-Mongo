@@ -54,4 +54,18 @@ NOTA:
 
 **A CONTINUACIÓN PODREMOS  EJECUTAR LAS SIGUIENTES CONSULTAS**
 
+Contar el numero total de autores
+
+	SELECT (count(distinct ?subject) as ?Total)  
+	WHERE {
+	?subject ?r <http://dbpedia.org/ontology/Author> .
+	}
+
+	Listar el nombre de los 100 primeros autores
+
+	SELECT ?subject 
+	WHERE {
+	[foaf:name ?subject] ?r <http://dbpedia.org/ontology/Author> .
+	}LIMIT 100
+
 
