@@ -32,7 +32,8 @@ NOTA:
 
 **TERCERA ENTREGA - ENDPOINT CON FUSEKI**
 
-	**PASO A PASO INICIARLIZAR FUSEKI** (OPCIÓN 1) 
+   **PASO A PASO INICIARLIZAR FUSEKI** (OPCIÓN 1) 
+
 1) Instalar  la libreria  de java para ubuntu con el comandos:
 	- sudo apt-get install default-jre
 2) Entrar a la carpeta del repositorio:
@@ -42,7 +43,7 @@ NOTA:
 4) En el navegador ingresar a la url:
 	- http://localhost:3030/dataset.html
 
-	**USAR SCRIPT FUSEKI.SH** (opción 2)
+   **USAR SCRIPT FUSEKI.SH** (opción 2)
 
 1) Otorgar permiso al archivo fuseki.sh:
 	- chmod +x fuseki.sh
